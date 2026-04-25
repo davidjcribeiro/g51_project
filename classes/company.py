@@ -14,7 +14,6 @@ class Company(Gclass):
         self._name = name
         self._creation_date = creation_date
        
-        # Registo obrigatório
         Company.obj[self._id] = self
         Company.lst.append(self._id)
 
