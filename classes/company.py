@@ -1,4 +1,4 @@
-import Gclass
+from classes.Gclass import Gclass
 class Company(Gclass):
     obj = {}
     lst = []
