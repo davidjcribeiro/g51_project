@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if row else 'Nova' }} Distribuição{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('distributions') }}" style="color:var(--muted);text-decoration:none">Distribuições</a> / {{ 'Editar' if row else 'Nova' }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title">
+    <small>Distribuições</small>
+    {{ 'Editar Distribuição' if row else 'Nova Distribuição' }}
+  </div>
+</div>
+
+<div class="form-card">
+  <form method="post">
+    <div class="form-group">
+      <label>Central de Produção</label>
+      <select name="plant_id" required>
+        <option value="">— Selecionar central —</option>
+        {% for p in plants %}
+        <option value="{{ p.plant_id }}"
+          {% if row and row.plant_id == p.plant_id %}selected{% endif %}>
+          Central #{{ p.plant_id }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Rede de Distribuição</label>
+      <select name="grid_id" required>
+        <option value="">— Selecionar rede —</option>
+        {% for g in grids %}
+        <option value="{{ g.grid_id }}"
+          {% if row and row.grid_id == g.grid_id %}selected{% endif %}>
+          #{{ g.grid_id }} — {{ g.grid_name }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Data</label>
+      <input type="date" name="date" value="{{ row.distribution_date if row else '' }}" required>
+    </div>
+    <div class="form-group">
+      <label>Energia Fornecida (kWh)</label>
+      <input type="number" name="energy_kwh" step="0.01" min="0"
+             value="{{ row.energy_supplied_kwh if row else '' }}"
+             placeholder="0.00" required>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        {{ '✓ Guardar Alterações' if row else '＋ Registar' }}
+      </button>
+      <a href="{{ url_for('distributions') }}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

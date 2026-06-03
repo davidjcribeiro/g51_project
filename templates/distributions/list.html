@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Distribuições{% endblock %}
+{% block breadcrumb %}Plano de Distribuição{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title"><small>Gestão</small>Plano de Distribuição</div>
+  {% if session.role == 'admin' %}<a href="{{ url_for('distribution_new') }}" class="btn btn-primary">＋ Nova Distribuição</a>{% endif %}
+</div>
+<div class="table-section">
+  <div class="table-toolbar">
+    <div class="search-wrap">
+      <span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+      <input class="table-search" type="text" placeholder="Pesquisar distribuições..." style="margin-left: 30px;">
+    </div>
+    {% if session.role == 'admin' %}<button class="btn btn-bulk-del">🗑 Eliminar <span class="bcount">0</span> selecionados</button>{% endif %}
+  </div>
+  {% if session.role == 'admin' %}<form class="bulk-form" method="post" action="{{ url_for('distribution_bulk_delete') }}"></form>{% endif %}
+  <div class="table-wrap">
+    <table class="enhanced-table">
+      <thead><tr>
+        {% if session.role == 'admin' %}<th class="check-th"></th>{% endif %}
+        <th data-col="{{ 1 if session.role == 'admin' else 0 }}">Central</th>
+        <th data-col="{{ 2 if session.role == 'admin' else 1 }}">Rede</th>
+        <th data-col="{{ 3 if session.role == 'admin' else 2 }}">Data</th>
+        <th data-col="{{ 4 if session.role == 'admin' else 3 }}">Energia (kWh)</th>
+        {% if session.role == 'admin' %}<th></th>{% endif %}
+      </tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr data-id="{{ r.rowid }}">
+          {% if session.role == 'admin' %}<td class="check-td"></td>{% endif %}
+          <td><span class="id-badge">Central #{{ r.plant_id }}</span></td>
+          <td><span style="color:var(--muted);font-size:11px;font-family:'DM Mono',monospace">#{{ r.grid_id }}</span> {{ r.grid_name or '—' }}</td>
+          <td style="font-family:'DM Mono',monospace;font-size:13px">{{ r.distribution_date }}</td>
+          <td><span class="energy-val">{{ "%.2f"|format(r.energy_supplied_kwh) }}</span></td>
+          {% if session.role == 'admin' %}
+          <td class="td-actions">
+            <a href="{{ url_for('distribution_edit', rowid=r.rowid) }}" class="btn btn-edit">Editar</a>
+            <form method="post" action="{{ url_for('distribution_delete', rowid=r.rowid) }}" style="display:inline" onsubmit="return confirm('Eliminar este registo?')">
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+          </td>
+          {% endif %}
+        </tr>
+        {% else %}
+        <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📊</div><p>Nenhuma distribuição registada.</p></div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="no-results">Nenhum resultado encontrado.</div>
+  </div>
+</div>
+{% endblock %}
