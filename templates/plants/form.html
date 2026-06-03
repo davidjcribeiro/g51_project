@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if row else 'Nova' }} Central{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('plants') }}" style="color:var(--muted);text-decoration:none">Centrais</a> / {{ 'Editar' if row else 'Nova' }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title">
+    <small>Centrais</small>
+    {{ 'Editar Central' if row else 'Nova Central' }}
+  </div>
+</div>
+
+<div class="form-card">
+  <form method="post">
+    <div class="form-group">
+      <label>Empresa Proprietária</label>
+      <select name="company_id" required>
+        <option value="">— Selecionar empresa —</option>
+        {% for c in companies %}
+        <option value="{{ c.company_id }}"
+          {% if row and row.company_id == c.company_id %}selected{% endif %}>
+          #{{ c.company_id }} — {{ c.company_name }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Comentários</label>
+      <textarea name="comments" placeholder="Observações sobre a central...">{{ row.plant_comments if row else '' }}</textarea>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        {{ '✓ Guardar Alterações' if row else '＋ Criar Central' }}
+      </button>
+      <a href="{{ url_for('plants') }}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

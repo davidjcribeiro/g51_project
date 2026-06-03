@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Centrais{% endblock %}
+{% block breadcrumb %}Centrais de Produção{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title"><small>Gestão</small>Centrais de Produção</div>
+  {% if session.role == 'admin' %}<a href="{{ url_for('plant_new') }}" class="btn btn-primary">＋ Nova Central</a>{% endif %}
+</div>
+<div class="table-section">
+  <div class="table-toolbar">
+    <div class="search-wrap">
+      <span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+      <input class="table-search" type="text" placeholder="Pesquisar centrais..." style="margin-left: 30px;">
+    </div>
+    {% if session.role == 'admin' %}<button class="btn btn-bulk-del">🗑 Eliminar <span class="bcount">0</span> selecionados</button>{% endif %}
+  </div>
+  {% if session.role == 'admin' %}<form class="bulk-form" method="post" action="{{ url_for('plant_bulk_delete') }}"></form>{% endif %}
+  <div class="table-wrap">
+    <table class="enhanced-table">
+      <thead><tr>
+        {% if session.role == 'admin' %}<th class="check-th"></th>{% endif %}
+        <th data-col="{{ 1 if session.role == 'admin' else 0 }}">ID</th>
+        <th data-col="{{ 2 if session.role == 'admin' else 1 }}">Empresa</th>
+        <th data-col="{{ 3 if session.role == 'admin' else 2 }}">Comentários</th>
+        {% if session.role == 'admin' %}<th></th>{% endif %}
+      </tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr data-id="{{ r.plant_id }}">
+          {% if session.role == 'admin' %}<td class="check-td"></td>{% endif %}
+          <td><span class="id-badge">{{ r.plant_id }}</span></td>
+          <td><span style="color:var(--muted);font-size:11px;font-family:'DM Mono',monospace">#{{ r.company_id }}</span> {{ r.company_name or '—' }}</td>
+          <td style="color:var(--muted);font-size:13px">{{ r.plant_comments or '—' }}</td>
+          {% if session.role == 'admin' %}
+          <td class="td-actions">
+            <a href="{{ url_for('plant_edit', pid=r.plant_id) }}" class="btn btn-edit">Editar</a>
+            <form method="post" action="{{ url_for('plant_delete', pid=r.plant_id) }}" style="display:inline" onsubmit="return confirm('Eliminar central #{{ r.plant_id }}?')">
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+          </td>
+          {% endif %}
+        </tr>
+        {% else %}
+        <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⚙️</div><p>Nenhuma central registada.</p></div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="no-results">Nenhum resultado encontrado.</div>
+  </div>
+</div>
+{% endblock %}
