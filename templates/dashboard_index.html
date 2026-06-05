@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Analítico{% endblock %}
+{% block breadcrumb %}Dashboard Analítico{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title"><small>Análise</small>Dashboard Analítico</div>
+</div>
+
+<p style="color:var(--muted);margin-bottom:24px;font-size:14px">Seleciona um gráfico para visualizar a análise correspondente.</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:32px">
+
+  <a href="/dashboard/monthly" class="dash-card">
+    <div class="dash-icon">📈</div>
+    <div class="dash-label">Energia por Mês</div>
+    <div class="dash-sub">Linha + média mensal</div>
+  </a>
+
+  <a href="/dashboard/grid" class="dash-card">
+    <div class="dash-icon">🔌</div>
+    <div class="dash-label">Energia por Rede</div>
+    <div class="dash-sub">Top 10 redes (barras)</div>
+  </a>
+
+  <a href="/dashboard/plant" class="dash-card">
+    <div class="dash-icon">🏭</div>
+    <div class="dash-label">Energia por Central</div>
+    <div class="dash-sub">Top 10 centrais (barras)</div>
+  </a>
+
+  <a href="/dashboard/company" class="dash-card">
+    <div class="dash-icon">🏢</div>
+    <div class="dash-label">Energia por Empresa</div>
+    <div class="dash-sub">Top 8 empresas (barras)</div>
+  </a>
+
+  <a href="/dashboard/quarterly" class="dash-card">
+    <div class="dash-icon">📊</div>
+    <div class="dash-label">Energia por Trimestre</div>
+    <div class="dash-sub">Distribuição trimestral</div>
+  </a>
+
+  <a href="/dashboard/histogram" class="dash-card">
+    <div class="dash-icon">📉</div>
+    <div class="dash-label">Histograma</div>
+    <div class="dash-sub">Distribuição de frequências</div>
+  </a>
+
+  <a href="/dashboard/weekday" class="dash-card">
+    <div class="dash-icon">🗓️</div>
+    <div class="dash-label">Padrão Semanal</div>
+    <div class="dash-sub">Radar por dia da semana</div>
+  </a>
+
+  <a href="/dashboard/donut" class="dash-card">
+    <div class="dash-icon">🍩</div>
+    <div class="dash-label">Quota por Empresa</div>
+    <div class="dash-sub">Top 5 empresas (donut)</div>
+  </a>
+
+</div>
+
+<a href="/" class="btn btn-secondary">← Início</a>
+
+<style>
+.dash-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 18px;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+.dash-card:hover {
+  border-color: var(--accent, #1b6ef3);
+  box-shadow: 0 4px 16px rgba(27,110,243,.12);
+  transform: translateY(-2px);
+}
+.dash-icon { font-size: 28px; }
+.dash-label {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading);
+}
+.dash-sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+</style>
+{% endblock %}

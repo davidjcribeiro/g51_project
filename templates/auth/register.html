@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="light">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Registar — MyEnergy</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400&family=Sora:wght@700&display=swap" rel="stylesheet">
+  <style>
+    [data-theme="light"]{--bg:#f4f6fb;--surface:#fff;--border:#e3e8f0;--accent:#1b6ef3;--accent-l:#e8f0fe;--text:#1c2235;--muted:#8a93a8;--heading:#0d1321;--warn:#e3450a;--warn-l:#fef0eb;--green:#0e9f6e;--green-l:#e6f9f2;--input-bg:#f4f6fb}
+    [data-theme="dark"]{--bg:#0b0d13;--surface:#131720;--border:#252c3f;--accent:#4d94ff;--accent-l:rgba(77,148,255,.13);--text:#cdd3e0;--muted:#6b7280;--heading:#f0f2fa;--warn:#ff6b35;--warn-l:rgba(255,107,53,.1);--green:#00e5a0;--green-l:rgba(0,229,160,.1);--input-bg:#1a1f2e}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;transition:background .2s}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:36px;width:100%;max-width:420px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+    .logo{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+    .logo-bolt{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px}
+    .logo-text{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--heading)}
+    h1{font-family:'Sora',sans-serif;font-size:19px;font-weight:700;color:var(--heading);margin-bottom:5px}
+    .subtitle{font-size:13px;color:var(--muted);margin-bottom:22px}
+    .form-group{margin-bottom:15px}
+    label{display:block;font-size:10.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+    input,select{width:100%;background:var(--input-bg);border:1.5px solid var(--border);color:var(--text);padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;border-radius:7px;transition:border-color .13s;appearance:none}
+    input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,110,243,.1);background:var(--surface)}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a93a8' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+    .role-hint{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+    .divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+    .db-pass-box{background:var(--accent-l);border:1px solid rgba(27,110,243,.2);border-radius:8px;padding:12px 14px;margin-bottom:15px}
+    .db-pass-box p{font-size:12px;color:var(--accent);margin-bottom:8px;font-weight:500}
+    .btn-submit{width:100%;background:var(--accent);color:#fff;border:none;padding:11px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;border-radius:7px;cursor:pointer;transition:filter .13s;margin-top:6px}
+    .btn-submit:hover{filter:brightness(1.1)}
+    .link-row{text-align:center;margin-top:16px;font-size:13px;color:var(--muted)}
+    .link-row a{color:var(--accent);text-decoration:none;font-weight:600}
+    .alert{padding:10px 14px;border-radius:7px;font-size:13px;margin-bottom:14px;display:flex;gap:8px;align-items:center;font-weight:500}
+    .alert-error{background:var(--warn-l);color:var(--warn);border:1px solid rgba(227,69,10,.3)}
+    .theme-btn{position:fixed;top:16px;right:16px;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+  </style>
+</head>
+<body>
+<button class="theme-btn" id="tb" onclick="toggleTheme()">🌙</button>
+<div class="card">
+  <div class="logo">
+    <div class="logo-bolt">⚡</div>
+    <div><div class="logo-text">MyEnergy</div></div>
+  </div>
+  <h1>Criar conta</h1>
+  <p class="subtitle">Preencha os dados para se registar.</p>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat }}">✕ {{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+  <form method="post">
+    <div class="form-group">
+      <label>Nome de utilizador</label>
+      <input type="text" name="username" placeholder="ex: joao.silva" required autofocus>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Mínimo 4 caracteres" required>
+    </div>
+    <div class="form-group">
+      <label>Confirmar password</label>
+      <input type="password" name="confirm" placeholder="Repita a password" required>
+    </div>
+    <div class="form-group">
+      <label>Papel</label>
+      <select name="role">
+        <option value="viewer">Viewer — só visualização</option>
+        <option value="admin">Admin — acesso total</option>
+      </select>
+      <div class="role-hint">
+        <b>Admin</b>: pode adicionar, editar e eliminar registos.<br>
+        <b>Viewer</b>: só pode consultar os dados.
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="db-pass-box">
+      <p>🔐 Introduza a senha de acesso à base de dados para confirmar o registo</p>
+      <input type="password" name="db_password" placeholder="Senha de acesso à BD" required>
+    </div>
+    <button type="submit" class="btn-submit">Criar conta →</button>
+  </form>
+  <div class="link-row">Já tem conta? <a href="{{ url_for('login') }}">Fazer login</a></div>
+</div>
+<script>
+(function(){const s=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',s);document.getElementById('tb').textContent=s==='dark'?'☀️':'🌙'})();
+function toggleTheme(){const h=document.documentElement;const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.getElementById('tb').textContent=n==='dark'?'☀️':'🌙';}
+</script>
+</body>
+</html>

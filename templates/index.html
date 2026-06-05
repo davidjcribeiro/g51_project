@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title"><small>Bem-vindo</small>Dashboard</div>
+</div>
+
+<!-- KPI cards -->
+<div class="stats-grid">
+  <a href="{{ url_for('companies') }}" class="stat-card">
+    <div class="stat-label">Empresas</div>
+    <div class="stat-num">{{ stats.companies }}</div>
+    <div class="stat-icon">🏭</div>
+  </a>
+  <a href="{{ url_for('grids') }}" class="stat-card">
+    <div class="stat-label">Redes de Distribuição</div>
+    <div class="stat-num">{{ stats.grids }}</div>
+    <div class="stat-icon">🔌</div>
+  </a>
+  <a href="{{ url_for('plants') }}" class="stat-card">
+    <div class="stat-label">Centrais de Produção</div>
+    <div class="stat-num">{{ stats.plants }}</div>
+    <div class="stat-icon">⚙️</div>
+  </a>
+  <a href="{{ url_for('distributions') }}" class="stat-card">
+    <div class="stat-label">Distribuições</div>
+    <div class="stat-num">{{ stats.distributions }}</div>
+    <div class="stat-icon">📊</div>
+  </a>
+</div>
+
+<!-- Energy KPIs (filled from API) -->
+<div class="stats-grid" id="energy-kpis" style="grid-template-columns:repeat(3,1fr);margin-bottom:28px">
+  <div class="stat-card" style="cursor:default">
+    <div class="stat-label">Total Energia Distribuída</div>
+    <div class="stat-num" id="kpi-total" style="font-size:28px">—</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">kWh</div>
+    <div class="stat-icon">⚡</div>
+  </div>
+  <div class="stat-card" style="cursor:default">
+    <div class="stat-label">Média por Distribuição</div>
+    <div class="stat-num" id="kpi-avg" style="font-size:28px">—</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">kWh</div>
+    <div class="stat-icon">📈</div>
+  </div>
+  <div class="stat-card" style="cursor:default">
+    <div class="stat-label">Máximo Numa Distribuição</div>
+    <div class="stat-num" id="kpi-max" style="font-size:28px">—</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px">kWh</div>
+    <div class="stat-icon">🔝</div>
+  </div>
+</div>
+
+<!-- Gráficos Analíticos -->
+<div class="chart-card" style="margin-bottom:28px">
+  <div class="chart-title" style="margin-bottom:18px">Gráficos Analíticos</div>
+  <div class="analytics-grid">
+    <a href="/dashboard/monthly" class="analytics-btn">
+      <span class="analytics-icon">📈</span>
+      <span class="analytics-label">Energia por Mês</span>
+      <span class="analytics-sub">Linha + média mensal</span>
+    </a>
+    <a href="/dashboard/grid" class="analytics-btn">
+      <span class="analytics-icon">🔌</span>
+      <span class="analytics-label">Energia por Rede</span>
+      <span class="analytics-sub">Top 10 redes</span>
+    </a>
+    <a href="/dashboard/plant" class="analytics-btn">
+      <span class="analytics-icon">🏭</span>
+      <span class="analytics-label">Energia por Central</span>
+      <span class="analytics-sub">Top 10 centrais</span>
+    </a>
+    <a href="/dashboard/company" class="analytics-btn">
+      <span class="analytics-icon">🏢</span>
+      <span class="analytics-label">Energia por Empresa</span>
+      <span class="analytics-sub">Top 8 empresas</span>
+    </a>
+    <a href="/dashboard/quarterly" class="analytics-btn">
+      <span class="analytics-icon">📊</span>
+      <span class="analytics-label">Energia por Trimestre</span>
+      <span class="analytics-sub">Distribuição trimestral</span>
+    </a>
+    <a href="/dashboard/histogram" class="analytics-btn">
+      <span class="analytics-icon">📉</span>
+      <span class="analytics-label">Histograma</span>
+      <span class="analytics-sub">Distribuição de frequências</span>
+    </a>
+    <a href="/dashboard/weekday" class="analytics-btn">
+      <span class="analytics-icon">🗓️</span>
+      <span class="analytics-label">Padrão Semanal</span>
+      <span class="analytics-sub">Radar por dia da semana</span>
+    </a>
+    <a href="/dashboard/donut" class="analytics-btn">
+      <span class="analytics-icon">🍩</span>
+      <span class="analytics-label">Quota por Empresa</span>
+      <span class="analytics-sub">Top 5 empresas (donut)</span>
+    </a>
+  </div>
+</div>
+
+<!-- Quick access -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 24px;box-shadow:var(--shadow);display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+  <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);white-space:nowrap">Acesso Rápido</div>
+  <a href="{{ url_for('company_new') }}" class="btn btn-secondary">＋ Nova Empresa</a>
+  <a href="{{ url_for('grid_new') }}" class="btn btn-secondary">＋ Nova Rede</a>
+  <a href="{{ url_for('plant_new') }}" class="btn btn-secondary">＋ Nova Central</a>
+  <a href="{{ url_for('distribution_new') }}" class="btn btn-primary">＋ Registar Distribuição</a>
+</div>
+
+<style>
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+.chart-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading);
+  margin-bottom: 16px;
+}
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+.analytics-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 20px 18px;
+  background: var(--panel, #f7f8fc);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: border-color .15s, box-shadow .15s, transform .12s;
+  min-height: 110px;
+}
+.analytics-btn:hover {
+  border-color: var(--accent, #1b6ef3);
+  box-shadow: 0 4px 14px rgba(27,110,243,.10);
+  transform: translateY(-2px);
+}
+.analytics-icon { font-size: 26px; }
+.analytics-label {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--heading);
+  line-height: 1.3;
+}
+.analytics-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function fmt(n) {
+  if (n === null || n === undefined) return '—';
+  if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1) + 'k';
+  return n.toFixed(2);
+}
+
+fetch('/api/dashboard')
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('kpi-total').textContent = fmt(data.totals.total);
+    document.getElementById('kpi-avg').textContent   = fmt(data.totals.avg);
+    document.getElementById('kpi-max').textContent   = fmt(data.totals.max);
+  });
+</script>
+{% endblock %}

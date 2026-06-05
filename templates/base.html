@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MyEnergy{% endblock %} — Sistema de Gestão</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    [data-theme="light"] {
+      --bg:#f4f6fb; --surface:#fff; --panel:#f0f3fa; --border:#e3e8f0;
+      --accent:#1b6ef3; --accent-l:#e8f0fe;
+      --green:#0e9f6e; --green-l:#e6f9f2;
+      --warn:#e3450a; --warn-l:#fef0eb;
+      --text:#1c2235; --muted:#8a93a8; --heading:#0d1321;
+      --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.04);
+      --input-bg:#f4f6fb;
+    }
+    [data-theme="dark"] {
+      --bg:#0b0d13; --surface:#131720; --panel:#1a1f2e; --border:#252c3f;
+      --accent:#4d94ff; --accent-l:rgba(77,148,255,.13);
+      --green:#00e5a0; --green-l:rgba(0,229,160,.1);
+      --warn:#ff6b35; --warn-l:rgba(255,107,53,.1);
+      --text:#cdd3e0; --muted:#6b7280; --heading:#f0f2fa;
+      --shadow:0 1px 3px rgba(0,0,0,.3),0 4px 12px rgba(0,0,0,.2);
+      --input-bg:#1a1f2e;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;transition:background .2s,color .2s}
+    .sidebar{width:232px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;box-shadow:var(--shadow)}
+    .sidebar-logo{padding:22px 20px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .logo-bolt{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .logo-text{font-family:'Sora',sans-serif;font-size:17px;font-weight:700;color:var(--heading)}
+    .logo-sub{font-size:10px;color:var(--muted);margin-top:1px}
+    .sidebar-nav{padding:12px 0;flex:1}
+    .nav-section{padding:12px 18px 4px;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:all .12s;margin:1px 8px;border-radius:6px}
+    .nav-item:hover{color:var(--text);background:var(--panel)}
+    .nav-item.active{color:var(--accent);background:var(--accent-l);font-weight:600}
+    .nav-item .icon{font-size:15px;width:18px;text-align:center}
+    .sidebar-footer{padding:14px 16px;border-top:1px solid var(--border)}
+    .user-badge{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;background:var(--panel);margin-bottom:8px}
+    .user-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+    .user-name{font-size:13px;font-weight:600;color:var(--heading)}
+    .user-role{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px}
+    .main{margin-left:232px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+    .topbar{height:54px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:50;gap:12px}
+    .breadcrumb{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);flex:1}
+    .breadcrumb span{color:var(--accent);font-weight:500}
+    .btn-icon{width:34px;height:34px;border-radius:7px;border:1px solid var(--border);background:var(--panel);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--muted);transition:all .13s;flex-shrink:0}
+    .btn-icon:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-l)}
+    .content{padding:28px 32px;flex:1}
+    .page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+    .page-title{font-family:'Sora',sans-serif;font-size:24px;font-weight:700;color:var(--heading)}
+    .page-title small{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;border:none;cursor:pointer;text-decoration:none;transition:all .13s;border-radius:6px}
+    .btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(27,110,243,.25)}
+    .btn-primary:hover{filter:brightness(1.1)}
+    .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+    .btn-secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+    .btn-danger{background:transparent;color:var(--warn);border:1px solid transparent;padding:5px 10px;font-size:12.5px;border-radius:5px}
+    .btn-danger:hover{background:var(--warn-l);border-color:var(--warn)}
+    .btn-edit{background:transparent;color:var(--accent);border:1px solid transparent;padding:5px 10px;font-size:12.5px;border-radius:5px}
+    .btn-edit:hover{background:var(--accent-l);border-color:var(--accent)}
+    .btn-bulk-del{background:var(--warn);color:#fff;font-size:13px;padding:8px 16px;border-radius:6px;display:none;gap:7px;border:none;cursor:pointer}
+    .btn-bulk-del:hover{filter:brightness(1.1)}
+    .table-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .search-wrap{position:relative;flex:1;min-width:180px;max-width:300px}
+    .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);display:flex;align-items:center;pointer-events:none;color:var(--muted);z-index:1;line-height:0}
+    .table-search{width:100%;background:var(--surface);border:1.5px solid var(--border);color:var(--text);padding:8px 12px 8px 34px;font-family:'DM Sans',sans-serif;font-size:13.5px;border-radius:7px;outline:none;transition:border-color .13s}
+    .table-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,110,243,.08)}
+    .table-search::placeholder{color:var(--muted)}
+    .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+    table{width:100%;border-collapse:collapse}
+    thead{background:var(--panel)}
+    th{padding:11px 14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border);font-weight:500;white-space:nowrap}
+    th.sortable-col{cursor:pointer;user-select:none;transition:color .12s}
+    th.sortable-col:hover,th.sort-asc,th.sort-desc{color:var(--accent)}
+    .sort-arrow{display:inline-block;margin-left:5px;font-size:10px;opacity:.4}
+    th.sortable-col:hover .sort-arrow,th.sort-asc .sort-arrow,th.sort-desc .sort-arrow{opacity:1;color:var(--accent)}
+    td{padding:12px 14px;font-size:14px;border-bottom:1px solid var(--border);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--panel)}
+    .id-badge{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--accent);background:var(--accent-l);padding:3px 8px;border-radius:4px}
+    .td-actions{text-align:right;white-space:nowrap}
+    .empty-state{text-align:center;padding:56px 20px;color:var(--muted)}
+    .empty-state .empty-icon{font-size:38px;margin-bottom:12px;opacity:.5}
+    .check-th,.check-td{width:36px;padding:0 4px 0 10px !important}
+    .row-check{display:flex;align-items:center;justify-content:center}
+    .check-circle{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;opacity:0;flex-shrink:0;background:var(--surface)}
+    .check-circle:hover{border-color:var(--accent);opacity:1!important}
+    .check-circle.checked{background:var(--accent);border-color:var(--accent);opacity:1!important}
+    .check-tick{font-size:11px;color:#fff;display:none;line-height:1}
+    .check-circle.checked .check-tick{display:block}
+    tr:hover .check-circle{opacity:1}
+    tr.row-selected td{background:var(--accent-l)!important}
+    .no-results{text-align:center;padding:40px;color:var(--muted);font-size:13.5px;display:none}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px;position:relative;overflow:hidden;text-decoration:none;display:block;box-shadow:var(--shadow);transition:box-shadow .13s,transform .13s}
+    .stat-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.12);transform:translateY(-2px)}
+    .stat-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+    .stat-num{font-family:'Sora',sans-serif;font-size:40px;font-weight:700;color:var(--heading);line-height:1}
+    .stat-icon{position:absolute;right:18px;bottom:14px;font-size:26px;opacity:.15}
+    .form-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px 30px;max-width:540px;box-shadow:var(--shadow)}
+    .form-group{margin-bottom:18px}
+    label{display:block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-weight:500}
+    input[type="text"],input[type="date"],input[type="number"],input[type="password"],select,textarea{width:100%;background:var(--input-bg);border:1.5px solid var(--border);color:var(--text);padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .13s,box-shadow .13s;border-radius:6px;appearance:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(27,110,243,.1);background:var(--surface)}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a93a8' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+    textarea{resize:vertical;min-height:80px}
+    .form-actions{display:flex;gap:10px;margin-top:24px;padding-top:18px;border-top:1px solid var(--border)}
+    .alerts{margin-bottom:20px}
+    .alert{padding:11px 15px;font-size:13.5px;border-radius:7px;margin-bottom:8px;display:flex;align-items:center;gap:8px;font-weight:500}
+    .alert-success{background:var(--green-l);color:var(--green);border:1px solid rgba(14,159,110,.3)}
+    .alert-error{background:var(--warn-l);color:var(--warn);border:1px solid rgba(227,69,10,.3)}
+    .energy-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--green);font-weight:500}
+    .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px;box-shadow:var(--shadow)}
+    .chart-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--heading);margin-bottom:16px}
+    .chart-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);font-weight:400}
+    .role-viewer{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;background:rgba(139,92,246,.15);color:#8b5cf6;padding:2px 6px;border-radius:3px}
+    .role-admin{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;background:var(--accent-l);color:var(--accent);padding:2px 6px;border-radius:3px}
+  </style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-bolt">⚡</div>
+    <div>
+      <div class="logo-text">MyEnergy</div>
+      <div class="logo-sub">Sistema de Gestão</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Painel</div>
+    <a href="{{ url_for('index') }}" class="nav-item {% if request.endpoint=='index' %}active{% endif %}"><span class="icon">◈</span> Dashboard</a>
+    <div class="nav-section" style="margin-top:8px">Entidades</div>
+    <a href="{{ url_for('companies') }}" class="nav-item {% if 'compan' in request.endpoint %}active{% endif %}"><span class="icon">🏭</span> Empresas</a>
+    <a href="{{ url_for('grids') }}" class="nav-item {% if request.endpoint in ['grids','grid_new','grid_edit'] %}active{% endif %}"><span class="icon">🔌</span> Redes</a>
+    <a href="{{ url_for('plants') }}" class="nav-item {% if 'plant' in request.endpoint %}active{% endif %}"><span class="icon">⚙️</span> Centrais</a>
+    <a href="{{ url_for('distributions') }}" class="nav-item {% if 'distribut' in request.endpoint %}active{% endif %}"><span class="icon">📊</span> Distribuições</a>
+  </nav>
+  <div class="sidebar-footer">
+    {% if session.username %}
+    <div class="user-badge">
+      <div class="user-avatar">{{ session.username[0].upper() }}</div>
+      <div>
+        <div class="user-name">{{ session.username }}</div>
+        <div class="user-role">{{ session.role }}</div>
+      </div>
+    </div>
+    <a href="{{ url_for('logout') }}" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:13px;padding:7px">Terminar sessão</a>
+    {% endif %}
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <span class="breadcrumb">MyEnergy <span>/ {% block breadcrumb %}—{% endblock %}</span></span>
+    <button class="btn-icon" id="theme-toggle" title="Alternar tema" onclick="toggleTheme()">🌙</button>
+  </div>
+  <div class="content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alerts">
+          {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ '✓' if cat=='success' else '✕' }} {{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<script>
+// ── DARK MODE ─────────────────────────────────────────────────────────────────
+(function(){
+  const saved = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+})();
+function toggleTheme(){
+  const html = document.documentElement;
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+}
+
+// ── TABLE ENHANCEMENTS ────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('table.enhanced-table').forEach(initTable);
+});
+
+function initTable(table){
+  const tbody   = table.querySelector('tbody');
+  const allRows = () => Array.from(tbody.querySelectorAll('tr[data-id]'));
+  const section = table.closest('.table-section');
+  const noRes   = section?.querySelector('.no-results');
+  const toolbar = section?.querySelector('.table-toolbar');
+
+  // SORT
+  let sortCol = -1, sortDir = 1;
+  table.querySelectorAll('th[data-col]').forEach(function(th){
+    th.classList.add('sortable-col');
+    const arrow = document.createElement('span');
+    arrow.className = 'sort-arrow'; arrow.textContent = '↕';
+    th.appendChild(arrow);
+    th.addEventListener('click', function(){
+      const col = parseInt(th.dataset.col);
+      if(sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+      table.querySelectorAll('th[data-col]').forEach(h => {
+        h.classList.remove('sort-asc','sort-desc');
+        h.querySelector('.sort-arrow').textContent = '↕';
+      });
+      th.classList.add(sortDir===1?'sort-asc':'sort-desc');
+      th.querySelector('.sort-arrow').textContent = sortDir===1?'↑':'↓';
+      allRows().sort(function(a,b){
+        const av = a.cells[col]?.textContent.trim()??'';
+        const bv = b.cells[col]?.textContent.trim()??'';
+        const an = parseFloat(av.replace(/[^0-9.-]/g,''));
+        const bn = parseFloat(bv.replace(/[^0-9.-]/g,''));
+        if(!isNaN(an)&&!isNaN(bn)) return (an-bn)*sortDir;
+        return av.localeCompare(bv,'pt')*sortDir;
+      }).forEach(r => tbody.appendChild(r));
+    });
+  });
+
+  // SEARCH
+  const si = toolbar?.querySelector('.table-search');
+  if(si) si.addEventListener('input', function(){
+    const q = si.value.toLowerCase().trim();
+    let vis = 0;
+    allRows().forEach(r => {
+      const m = !q || r.textContent.toLowerCase().includes(q);
+      r.style.display = m?'':'none';
+      if(m) vis++;
+    });
+    if(noRes) noRes.style.display = vis===0&&q?'block':'none';
+  });
+
+  // BULK DELETE
+  const bulkBtn  = toolbar?.querySelector('.btn-bulk-del');
+  const bulkForm = section?.querySelector('.bulk-form');
+  const bcount   = bulkBtn?.querySelector('.bcount');
+  if(!bulkBtn||!bulkForm) return;
+
+  const state = new Map();
+  function refreshBtn(){
+    const n = [...state.values()].filter(v=>v.checked).length;
+    bulkBtn.style.display = n>0?'inline-flex':'none';
+    if(bcount) bcount.textContent = n;
+  }
+
+  allRows().forEach(function(row){
+    const td = row.querySelector('.check-td');
+    if(!td) return;
+    td.innerHTML = '<div class="row-check"><div class="check-circle"><span class="check-tick">✓</span></div></div>';
+    const cc = td.querySelector('.check-circle');
+    const entry = {checked:false};
+    state.set(row.dataset.id, entry);
+    cc.addEventListener('click', e => {
+      e.stopPropagation();
+      entry.checked = !entry.checked;
+      cc.classList.toggle('checked', entry.checked);
+      row.classList.toggle('row-selected', entry.checked);
+      refreshBtn();
+    });
+    row.addEventListener('mouseenter', ()=>{ if(!entry.checked) cc.style.opacity='1'; });
+    row.addEventListener('mouseleave', ()=>{ if(!entry.checked) cc.style.opacity='0'; });
+  });
+
+  bulkBtn.addEventListener('click', function(){
+    const sel = [...state.entries()].filter(([,v])=>v.checked);
+    if(!sel.length) return;
+    if(!confirm('Eliminar '+sel.length+' registo(s) selecionado(s)?')) return;
+    bulkForm.querySelectorAll('input[name="ids"]').forEach(i=>i.remove());
+    sel.forEach(([id])=>{ const i=document.createElement('input'); i.type='hidden'; i.name='ids'; i.value=id; bulkForm.appendChild(i); });
+    bulkForm.submit();
+  });
+}
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

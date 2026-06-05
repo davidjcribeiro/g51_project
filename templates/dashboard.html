@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ chart_title }}{% endblock %}
+{% block breadcrumb %}<a href="/" style="color:var(--muted);text-decoration:none">Dashboard</a> › {{ chart_title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-title"><small>Gráficos Analíticos</small>{{ chart_title }}</div>
+</div>
+
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;box-shadow:var(--shadow);margin-bottom:20px">
+  {{ plot_div | safe }}
+</div>
+
+<a href="/" class="btn btn-secondary">← Voltar ao Dashboard</a>
+{% endblock %}
