@@ -81,7 +81,7 @@ def register():
         confirm   = request.form['confirm']
         role      = request.form['role']
         db_pass   = request.form['db_password']
-        if db_pass != DB_ACCESS_PW:
+        if role == 'admin' and db_pass != DB_ACCESS_PW:
             flash('Senha de acesso à base de dados incorreta.', 'error')
         elif not username:
             flash('Nome de utilizador é obrigatório.', 'error')
