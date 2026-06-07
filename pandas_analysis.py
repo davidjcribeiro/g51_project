@@ -1,7 +1,7 @@
 import pandas as pd
 import sqlite3
 
-DB_PATH = 'TrabalhoPCII.db'
+DB_PATH = 'data/TrabalhoPCII.db'
 
 # 1. CARREGAR DADOS
 
